@@ -16,8 +16,6 @@ public class SignUpForm {
     @Email
     private String email;
 
-    private Integer rankValue;
-
     private Set<String> role;
 
     @NotBlank
@@ -56,11 +54,4 @@ public class SignUpForm {
         this.role = role;
     }
 
-    public Integer getRankValue() {
-        return rankValue;
-    }
-
-    public void setRankValue(Integer rankValue) {
-        this.rankValue = rankValue;
-    }
 }

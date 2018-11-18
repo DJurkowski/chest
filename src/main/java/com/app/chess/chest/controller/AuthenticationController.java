@@ -73,7 +73,7 @@ public class AuthenticationController {
 
         // Creating user's account
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getRankValue());
+                encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -99,6 +99,7 @@ public class AuthenticationController {
             }
         });
 
+        user.setRankValue(1);   //RankValue ustalamy
         user.setRoles(roles);
         userRepository.save(user);
 

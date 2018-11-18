@@ -61,11 +61,10 @@ public class User {
 
     public User() {}
 
-    public User(String username, String email, String password, Integer rankValue) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.rankValue = rankValue;
     }
 
     public Long getId() {
