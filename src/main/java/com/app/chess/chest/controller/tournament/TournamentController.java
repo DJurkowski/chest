@@ -2,9 +2,9 @@ package com.app.chess.chest.controller.tournament;
 
 
 import com.app.chess.chest.message.response.APIResponse;
-import com.app.chess.chest.message.response.ResponseMessage;
 import com.app.chess.chest.model.Tournament.Tournament;
 import com.app.chess.chest.security.services.Tournament.TournamentService;
+import com.app.chess.chest.security.services.match.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,13 @@ import javax.validation.Valid;
 public class TournamentController {
 
     private final TournamentService tournamentService;
+    private final MatchService matchService;
+
 
     @Autowired
-    public TournamentController(TournamentService tournamentService) {
+    public TournamentController(TournamentService tournamentService, MatchService matchService) {
         this.tournamentService = tournamentService;
+        this.matchService = matchService;
     }
 
     @GetMapping("/user/{userId}/tournament/{tournamentId}")
@@ -66,5 +69,11 @@ public class TournamentController {
     public ResponseEntity addUserToTournament(@PathVariable("userId") Long userId, @PathVariable("tournamentId") Long tournamentId){
         tournamentService.addUserToTournament(tournamentId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+    }
+
+    @GetMapping("/user/{userId}/tournaments/{tournamentId}/matches")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getMatches(@PathVariable("userId") Long userId, @PathVariable("tournamentId") Long tournamentId){
+        return ResponseEntity.status(HttpStatus.OK).body(matchService.getMatches(tournamentId));
     }
 }

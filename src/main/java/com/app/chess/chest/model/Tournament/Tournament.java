@@ -1,6 +1,7 @@
 package com.app.chess.chest.model.Tournament;
 
 import com.app.chess.chest.model.User;
+import com.app.chess.chest.model.match.Match;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,10 @@ public class Tournament {
     @ManyToMany(mappedBy = "tournaments")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "tournament", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "tournament", allowSetters = true)
+    private List<Match> matches = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -124,5 +130,13 @@ public class Tournament {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<Match> matches) {
+        this.matches = matches;
     }
 }
