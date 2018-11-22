@@ -39,6 +39,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
     }
 
+    public Long getUserId(String username) {
+        return userRepository.findByUsername(username).get().getId();
+    }
+
     public Long modifyUser(User user) {
         if (existsById(user.getId())) {
             return userRepository.save(user).getId();
