@@ -69,7 +69,7 @@ public class TournamentController {
 
     @PostMapping("/user/{userId}/tournaments/{tournamentId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity addUserToTournament(@PathVariable("userId") String userId, @PathVariable("tournamentId") Long tournamentId){
+    public ResponseEntity addUserToTournament(@PathVariable("userId") String userId, @PathVariable("tournamentId") Long tournamentId, @RequestBody Long tourId){
         tournamentService.addUserToTournament(tournamentId, userService.getUserId(userId));
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
     }
