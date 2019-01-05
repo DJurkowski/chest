@@ -1,14 +1,12 @@
 package com.app.chess.chest.controller;
 
 import com.app.chess.chest.repository.UserRepository;
+import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -18,9 +16,22 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    private final UserDetailsServiceImpl userService;
+
+    @Autowired
+    public UserController(UserDetailsServiceImpl userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/users")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    }
+
+    @GetMapping("/username/{userId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getUsername(@PathVariable Long userId){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsername(userId));
     }
 }

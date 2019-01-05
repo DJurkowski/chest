@@ -32,7 +32,7 @@ public class Tournament {
     private Integer minValueOfRankValue;
     @NotNull
     private Integer maxNumberOfUser;
-    private Integer NumberOfUser;
+    private Integer numberOfUser;
     private Long masterUser;
 
     @JsonIgnoreProperties(value = "tournaments", allowSetters = true)
@@ -109,11 +109,11 @@ public class Tournament {
     }
 
     public Integer getNumberOfUser() {
-        return NumberOfUser;
+        return numberOfUser;
     }
 
     public void setNumberOfUser(Integer numberOfUser) {
-        NumberOfUser = numberOfUser;
+        this.numberOfUser = numberOfUser;
     }
 
     public Long getMasterUser() {
