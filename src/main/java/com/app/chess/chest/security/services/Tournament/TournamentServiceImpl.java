@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +34,27 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public List<Tournament> getTournaments() {
         return (List<Tournament>) tournamentRepository.findAll();
+    }
+
+    @Override
+    public List<Tournament> getTournamentsWithoutUser(Long userId) {
+        List<Tournament> result = new ArrayList<>();
+        boolean flag = false;
+        for(Tournament tour: tournamentRepository.findAll()) {
+            if (!tour.getMasterUser().equals(userId)) {
+                for (User userCheck : tour.getUsers()) {
+                    if (userCheck.getId().equals(userId)) {
+                        flag = true;
+                    }
+                }
+                if (flag == false) {
+                    result.add(tour);
+                }else {
+                    flag = false;
+                }
+            }
+        }
+        return result;
     }
 
     @Override

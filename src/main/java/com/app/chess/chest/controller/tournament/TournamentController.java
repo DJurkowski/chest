@@ -43,7 +43,9 @@ public class TournamentController {
 
     @GetMapping("/user/{userId}/tournaments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity getTournaments(@PathVariable("userId") String userId){return ResponseEntity.status(HttpStatus.OK).body(tournamentService.getTournaments());}
+    public ResponseEntity getTournaments(@PathVariable("userId") String userId){
+        return ResponseEntity.status(HttpStatus.OK).body(tournamentService.getTournamentsWithoutUser(userService.getUserId(userId)));
+    }
 
     @PostMapping("/user/{userId}/tournaments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

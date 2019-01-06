@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface TournamentService {
     List<Tournament> getTournaments();
+    List<Tournament> getTournamentsWithoutUser(Long userId);
     List<Tournament> getUserTournaments(Long userId);
     List<Tournament> getTournamentsByStatus(TournamentStatus status);
     Tournament getTournament(Long id);
