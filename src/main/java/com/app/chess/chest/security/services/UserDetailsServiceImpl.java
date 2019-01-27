@@ -82,10 +82,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //                    userRepository.save(userCheck);
                 }
             }
-//            userRepository.save(user);
+            userRepository.save(user);
     }
 
-    public Set<Room> getUserRooms(Long id){
+    public List<Room> getUserRooms(Long id){
         User user = getUser(id);
         return user.getRooms();
     }

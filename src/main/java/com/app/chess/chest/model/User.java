@@ -59,7 +59,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "user", allowSetters = true)
-    private Set<Room> rooms = new TreeSet<>();
+    private List<Room> rooms = new ArrayList<>();
 
     public User() {}
 
@@ -125,11 +125,11 @@ public class User {
         this.tournaments = tournaments;
     }
 
-    public Set<Room> getRooms() {
+    public List<Room> getRooms() {
         return rooms;
     }
 
-    public void setRooms(Set<Room> rooms) {
+    public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
 }

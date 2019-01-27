@@ -12,6 +12,7 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private String user1Id;
     private String user2Id;
 
@@ -20,7 +21,10 @@ public class Room {
     @JsonIgnoreProperties(value = "rooms", allowSetters = true)
     private User user;
 
+    public Room(){}
+
     public Room(String user1Id, String user2Id) {
+        this.name = "room" + this.id;
         this.user1Id = user1Id;
         this.user2Id = user2Id;
     }
