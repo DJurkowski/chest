@@ -1,6 +1,5 @@
 package com.app.chess.chest.controller;
 
-import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,29 +10,18 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
-public class UserController {
-
-    @Autowired
-    UserRepository userRepository;
+public class RoomController {
 
     private final UserDetailsServiceImpl userService;
 
     @Autowired
-    public UserController(UserDetailsServiceImpl userService) {
+    public RoomController(UserDetailsServiceImpl userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping("/user/{{userId}}/rooms")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getUsers(){
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    public ResponseEntity<?> getUserRooms(@PathVariable String userId){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserRooms(userService.getUserId(userId)));
     }
-
-    @GetMapping("/username/{userId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity getUsername(@PathVariable Long userId){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsername(userId));
-    }
-
-
 }

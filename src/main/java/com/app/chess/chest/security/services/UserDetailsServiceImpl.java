@@ -2,6 +2,7 @@ package com.app.chess.chest.security.services;
 
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
+import com.app.chess.chest.model.room.Room;
 import com.app.chess.chest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -62,10 +64,30 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public void deleteUser(Long id) {
         if (existsById(id)) {
+            User user = getUser(id);
+//            Usuwanie pokoji chatu przy usuwaniu uzytkownika
             userRepository.deleteById(id);
         } else {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
+    }
+
+    public void creatingRooms(User user){
+        List<User> users = getUsers();
+            for (User userCheck : users) {
+                if (!user.equals(userCheck)) {
+                    Room room = new Room(user.getUsername(), userCheck.getUsername());
+                    user.getRooms().add(room);
+                    userCheck.getRooms().add(room);
+//                    userRepository.save(userCheck);
+                }
+            }
+//            userRepository.save(user);
+    }
+
+    public Set<Room> getUserRooms(Long id){
+        User user = getUser(id);
+        return user.getRooms();
     }
 
     public boolean existsById(Long id){

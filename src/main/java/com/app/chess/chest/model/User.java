@@ -1,6 +1,7 @@
 package com.app.chess.chest.model;
 
 import com.app.chess.chest.model.Tournament.Tournament;
+import com.app.chess.chest.model.room.Room;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NaturalId;
 
@@ -8,10 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -58,6 +56,10 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
     private List<Tournament> tournaments = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "user", allowSetters = true)
+    private Set<Room> rooms = new TreeSet<>();
 
     public User() {}
 
@@ -121,5 +123,13 @@ public class User {
 
     public void setTournaments(List<Tournament> tournaments) {
         this.tournaments = tournaments;
+    }
+
+    public Set<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
     }
 }

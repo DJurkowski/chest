@@ -10,6 +10,7 @@ import com.app.chess.chest.model.User;
 import com.app.chess.chest.repository.RoleRepository;
 import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.jwt.JwtProvider;
+import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,13 @@ public class AuthenticationController {
 
     @Autowired
     JwtProvider jwtProvider;
+
+    private final UserDetailsServiceImpl userService;
+
+    @Autowired
+    public AuthenticationController(UserDetailsServiceImpl userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
@@ -102,7 +110,8 @@ public class AuthenticationController {
         user.setRankValue(1);   //RankValue ustalamy
         user.setRoles(roles);
         userRepository.save(user);
-
+        userService.creatingRooms(user);
+        //        tworzymy pokoje do czatow dla z kazdym uzyrkownikiem
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
 }
