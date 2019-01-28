@@ -11,8 +11,9 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 public class WebSocketConfiguration extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/api/auth/socket").setAllowedOrigins("*").withSockJS();
     }
 
     @Override

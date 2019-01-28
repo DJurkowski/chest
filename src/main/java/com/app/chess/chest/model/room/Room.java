@@ -24,7 +24,6 @@ public class Room {
     public Room(){}
 
     public Room(String user1Id, String user2Id) {
-        this.name = "room" + this.id;
         this.user1Id = user1Id;
         this.user2Id = user2Id;
     }
@@ -51,6 +50,14 @@ public class Room {
 
     public void setUser2Id(String user2Id) {
         this.user2Id = user2Id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public User getUser() {

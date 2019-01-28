@@ -3,7 +3,9 @@ package com.app.chess.chest.security.services;
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
 import com.app.chess.chest.model.room.Room;
+import com.app.chess.chest.repository.RoomRepository;
 import com.app.chess.chest.repository.UserRepository;
+import com.app.chess.chest.security.services.room.RoomServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +15,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private final UserRepository userRepository;
+    private final RoomServiceImpl roomService;
+    private final RoomRepository roomRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository) {
+        this.userRepository = userRepository;
+        this.roomService = roomService;
+        this.roomRepository = roomRepository;
+    }
 
     @Override
     @Transactional
@@ -79,15 +88,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     Room room = new Room(user.getUsername(), userCheck.getUsername());
                     user.getRooms().add(room);
                     userCheck.getRooms().add(room);
-//                    userRepository.save(userCheck);
+                    roomRepository.save(room);
                 }
             }
-            userRepository.save(user);
+            roomService.settingRoomsName(user.getRooms());
     }
 
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
-        return user.getRooms();
+        return (List<Room>) user.getRooms();
     }
 
     public boolean existsById(Long id){
