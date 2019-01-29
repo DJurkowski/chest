@@ -2,8 +2,11 @@ package com.app.chess.chest.model.room;
 
 import com.app.chess.chest.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "rooms")
@@ -16,10 +19,10 @@ public class Room {
     private String user1Id;
     private String user2Id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToMany(mappedBy = "rooms")
     @JsonIgnoreProperties(value = "rooms", allowSetters = true)
-    private User user;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<User> users;
 
     public Room(){}
 
@@ -60,11 +63,21 @@ public class Room {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", user1Id='" + user1Id + '\'' +
+                ", user2Id='" + user2Id + '\'' +
+                '}';
     }
 }

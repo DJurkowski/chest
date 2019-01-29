@@ -86,17 +86,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             for (User userCheck : users) {
                 if (!user.equals(userCheck)) {
                     Room room = new Room(user.getUsername(), userCheck.getUsername());
+                    roomRepository.save(room);
+                    if(room.getName() == null){
+                        room.setName("room" + room.getId());
+                        roomRepository.save(room);
+                    }
                     user.getRooms().add(room);
                     userCheck.getRooms().add(room);
-                    roomRepository.save(room);
+                    userRepository.save(userCheck);
+                    userRepository.save(user);
                 }
             }
-            roomService.settingRoomsName(user.getRooms());
+
     }
 
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
-        return (List<Room>) user.getRooms();
+
+        for(Room room: user.getRooms()){
+            System.out.println(room.toString());
+        }
+        return user.getRooms();
     }
 
     public boolean existsById(Long id){

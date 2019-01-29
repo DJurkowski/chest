@@ -19,9 +19,9 @@ public class RoomController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/{{userId}}/rooms")
+    @GetMapping("/user/{userId}/rooms")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getUserRooms(@PathVariable String userId){
+    public ResponseEntity getUserRooms(@PathVariable("userId") String userId){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserRooms(userService.getUserId(userId)));
     }
 }

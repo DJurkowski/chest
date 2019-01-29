@@ -57,8 +57,13 @@ public class User {
     )
     private List<Tournament> tournaments = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties(value = "user", allowSetters = true)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "users", allowSetters = true)
+    @JoinTable(
+            name = "user_rooms",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "room_id")}
+    )
     private List<Room> rooms = new ArrayList<>();
 
     public User() {}

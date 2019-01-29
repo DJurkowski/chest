@@ -17,14 +17,4 @@ public class RoomServiceImpl implements RoomService {
         this.roomRepository = roomRepository;
     }
 
-    public void settingRoomsName( List<Room> rooms){
-
-        for(Room room: rooms){
-            if(room.getName() == null){
-                room.setName("room" + room.getId());
-                roomRepository.save(room);
-            }
-        }
-
-    }
 }
