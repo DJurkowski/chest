@@ -2,6 +2,7 @@ package com.app.chess.chest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,9 +27,9 @@ public class WebSocketController {
     }
 
     @MessageMapping("/{roomId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+//    @MessageExceptionHandler
     public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
         this.template.convertAndSend("/privateRoom/" + roomId, new SimpleDateFormat("HH:mm:ss").format(new Date())+"- "+message);
-
+        System.out.println("message: "+ message + " room: "+ roomId);
     }
 }
