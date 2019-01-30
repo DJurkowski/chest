@@ -1,12 +1,15 @@
 package com.app.chess.chest.model.room;
 
 import com.app.chess.chest.model.User;
+import com.app.chess.chest.model.message.Message;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "rooms")
@@ -23,6 +26,10 @@ public class Room {
     @JsonIgnoreProperties(value = "rooms", allowSetters = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "room", allowSetters = true)
+    private Set<Message> messages = new TreeSet<>();
 
     public Room(){}
 
@@ -69,6 +76,14 @@ public class Room {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
     }
 
     @Override

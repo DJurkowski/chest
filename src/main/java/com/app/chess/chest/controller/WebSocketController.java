@@ -1,5 +1,6 @@
 package com.app.chess.chest.controller;
 
+import com.app.chess.chest.security.services.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,15 +19,19 @@ import java.util.Date;
 public class WebSocketController {
 
     private final SimpMessagingTemplate template;
+    private final RoomService roomService;
 
     @Autowired
-    public WebSocketController(SimpMessagingTemplate template) {
+    public WebSocketController(SimpMessagingTemplate template, RoomService roomService) {
         this.template = template;
+        this.roomService = roomService;
     }
 
     @MessageMapping("/{roomId}")
     public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
-        this.template.convertAndSend("/privateRoom/" + roomId, new SimpleDateFormat("HH:mm:ss").format(new Date())+" - "+message);
+        String messageOut = new SimpleDateFormat("HH:mm:ss").format(new Date())+" - "+message;
+        this.template.convertAndSend("/privateRoom/" + roomId, messageOut);
+        roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
         System.out.println("message: "+ message + " room: "+ roomId);
     }
 }
