@@ -103,11 +103,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
 
-        for(Room room: user.getRooms()){
-            System.out.println(room.toString());
-        }
         return user.getRooms();
     }
+
+
 
     public boolean existsById(Long id){
         return userRepository.existsById(id);
