@@ -31,7 +31,6 @@ public class RoomServiceImpl implements RoomService {
         messageResult.setRoom(room);
         room.getMessages().add(messageResult);
         roomRepository.save(room);
-        System.out.println("Room check if message created");
     }
 
     @Override

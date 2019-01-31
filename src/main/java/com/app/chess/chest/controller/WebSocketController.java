@@ -29,7 +29,7 @@ public class WebSocketController {
 
     @MessageMapping("/{roomId}")
     public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
-        String messageOut = new SimpleDateFormat("HH:mm:ss").format(new Date())+" - "+message;
+        String messageOut = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" - "+message;
         this.template.convertAndSend("/privateRoom/" + roomId, messageOut);
         roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
         System.out.println("message: "+ message + " room: "+ roomId);
