@@ -79,6 +79,7 @@ public class TournamentController {
     @GetMapping("/user/{userId}/tournaments/{tournamentId}/matches")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getMatches(@PathVariable("userId") String userId, @PathVariable("tournamentId") Long tournamentId){
+        System.out.println("JEstem w matches");
         return ResponseEntity.status(HttpStatus.OK).body(matchService.getMatches(tournamentId));
     }
 }

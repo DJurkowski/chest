@@ -29,6 +29,9 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public List<Match> getMatches(Long tournamentId) {
         Tournament tournament = tournamentService.getTournament(tournamentId);
+        for(Match m : tournament.getMatches()){
+            System.out.println("Mecz:  " + m);
+        }
         return tournament.getMatches();
     }
 
