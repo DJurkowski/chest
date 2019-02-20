@@ -13,9 +13,12 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+    @Enumerated(EnumType.STRING)
     private MatchStatus status;
     private Long user1Id;
     private Long user2Id;
+    private Long whoWon;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tournament_id")
@@ -60,5 +63,21 @@ public class Match {
 
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getWhoWon() {
+        return whoWon;
+    }
+
+    public void setWhoWon(Long whoWon) {
+        this.whoWon = whoWon;
     }
 }

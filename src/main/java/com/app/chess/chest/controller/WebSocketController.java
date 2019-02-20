@@ -34,4 +34,10 @@ public class WebSocketController {
         roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
         System.out.println("message: "+ message + " room: "+ roomId);
     }
+
+    @MessageMapping ("/game/{gameRoomId}")
+    public void sendMessageToGameRoom(@NotNull String message, @DestinationVariable String gameRoomId) throws IOException{
+        this.template.convertAndSend("/gameRoom/"+gameRoomId, message);
+        System.out.println(" message:" + message + " gameRoom: "+ gameRoomId);
+    }
 }
