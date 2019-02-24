@@ -18,6 +18,7 @@ public class Match {
     private MatchStatus status;
     private Long user1Id;
     private Long user2Id;
+    private Boolean showMatch;
     private Long whoWon;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -80,4 +81,13 @@ public class Match {
     public void setWhoWon(Long whoWon) {
         this.whoWon = whoWon;
     }
+
+    public Boolean getShowMatch() {
+        return showMatch;
+    }
+
+    public void setShowMatch(Boolean showMatch) {
+        this.showMatch = showMatch;
+    }
+
 }

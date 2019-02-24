@@ -29,9 +29,6 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public List<Match> getMatches(Long tournamentId) {
         Tournament tournament = tournamentService.getTournament(tournamentId);
-        for(Match m : tournament.getMatches()){
-            System.out.println("Mecz:  " + m);
-        }
         return tournament.getMatches();
     }
 
@@ -54,6 +51,12 @@ public class MatchServiceImpl implements MatchService {
                 tournamentService.updateTournament(tournament);
             }
             matchRepository.save(match);
+            if(match.getName() == null){
+                match.setName("match" + match.getId());
+                match.setStatus(MatchStatus.STANDBY);
+                match.setShowMatch(false);
+                matchRepository.save(match);
+            }
         }
     }
 
@@ -61,6 +64,24 @@ public class MatchServiceImpl implements MatchService {
     public void deleteMatch(Long id) {
         if(existsById(id)){
             matchRepository.deleteById(id);
+        }else {
+            throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void updateMatch(Long id, Match match) {
+        if(existsById(id)){
+            Match matchNow = getMatch(id);
+            if(!matchNow.getStatus().equals(match.getStatus())){
+                System.out.println("Jestme status: " + match.getStatus() );
+                matchNow.setStatus(match.getStatus());
+            }
+            if(!matchNow.getShowMatch().equals(match.getShowMatch())){
+                System.out.println("Jestme status: " + match.getShowMatch() );
+                matchNow.setShowMatch(match.getShowMatch());
+            }
+            matchRepository.save(matchNow);
         }else {
             throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }

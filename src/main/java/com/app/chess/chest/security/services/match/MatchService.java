@@ -11,4 +11,5 @@ public interface MatchService {
     Match getMatch(Long id);
     void createMatch(Match match, Tournament tournament, Long user1Id, Long user2Id);
     void deleteMatch(Long id);
+    void updateMatch(Long id, Match match);
 }
