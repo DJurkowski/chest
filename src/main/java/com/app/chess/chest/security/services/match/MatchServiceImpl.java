@@ -74,8 +74,21 @@ public class MatchServiceImpl implements MatchService {
         if(existsById(id)){
             Match matchNow = getMatch(id);
             if(!matchNow.getStatus().equals(match.getStatus())){
-                System.out.println("Jestme status: " + match.getStatus() );
                 matchNow.setStatus(match.getStatus());
+                if(matchNow.getStatus().equals(MatchStatus.FINISHED)){
+                    int numberOfMatch = matchNow.getTournament().getMatches().size();
+                    int finished = 0;
+                    for(Match matchTour: matchNow.getTournament().getMatches()){
+                        if(matchTour.getStatus().equals(MatchStatus.FINISHED)){
+                            finished++;
+                        }
+                    }
+                    if(finished == numberOfMatch){
+                        Tournament tour = matchNow.getTournament();
+                        tour.setStatus(TournamentStatus.FINISHED);
+                        tournamentService.updateTournament(tour);
+                    }
+                }
             }
             if(!matchNow.getShowMatch().equals(match.getShowMatch())){
                 System.out.println("Jestme status: " + match.getShowMatch() );
