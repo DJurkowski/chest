@@ -35,5 +35,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUsername(userId));
     }
 
+    @GetMapping("/user/{userId}/id")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getUserId(@PathVariable("userId") String userId){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserId(userId));
+    }
+
 
 }

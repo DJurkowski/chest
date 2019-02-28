@@ -16,8 +16,8 @@ public class Match {
     private String name;
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
-    private Long user1Id;
-    private Long user2Id;
+    private Long userOneId;
+    private Long userTwoId;
     private Boolean showMatch;
     private Long whoWon;
 
@@ -42,20 +42,20 @@ public class Match {
         this.status = status;
     }
 
-    public Long getUser1Id() {
-        return user1Id;
+    public Long getUserOneId() {
+        return userOneId;
     }
 
-    public void setUser1Id(Long user1Id) {
-        this.user1Id = user1Id;
+    public void setUserOneId(Long userOneId) {
+        this.userOneId = userOneId;
     }
 
-    public Long getUser2Id() {
-        return user2Id;
+    public Long getuserTwoId() {
+        return userTwoId;
     }
 
-    public void setUser2Id(Long user2Id) {
-        this.user2Id = user2Id;
+    public void setuserTwoId(Long userTwoId) {
+        this.userTwoId = userTwoId;
     }
 
     public Tournament getTournament() {

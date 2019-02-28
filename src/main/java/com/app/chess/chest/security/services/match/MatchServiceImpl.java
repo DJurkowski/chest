@@ -43,8 +43,8 @@ public class MatchServiceImpl implements MatchService {
             throw new AlreadyExistsException(Match.class.getSimpleName() + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
         } else {
             match.setTournament(tournament);
-            match.setUser1Id(user1Id);
-            match.setUser2Id(user2Id);
+            match.setUserOneId(user1Id);
+            match.setuserTwoId(user2Id);
             match.setStatus(MatchStatus.STANDBY);
             if (!tournament.getStatus().equals(TournamentStatus.STANDBY)) {
                 tournament.setStatus(TournamentStatus.STANDBY);
@@ -55,6 +55,7 @@ public class MatchServiceImpl implements MatchService {
                 match.setName("match" + match.getId());
                 match.setStatus(MatchStatus.STANDBY);
                 match.setShowMatch(false);
+                match.setWhoWon(0L);
                 matchRepository.save(match);
             }
         }
@@ -76,6 +77,10 @@ public class MatchServiceImpl implements MatchService {
             if(!matchNow.getStatus().equals(match.getStatus())){
                 matchNow.setStatus(match.getStatus());
                 if(matchNow.getStatus().equals(MatchStatus.FINISHED)){
+                    System.out.println("Kto wygral" + matchNow.getWhoWon());
+                    if(matchNow.getWhoWon().equals(0L)){
+                        matchNow.setWhoWon(match.getWhoWon());
+                    }
                     int numberOfMatch = matchNow.getTournament().getMatches().size();
                     int finished = 0;
                     for(Match matchTour: matchNow.getTournament().getMatches()){
