@@ -106,6 +106,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user.getRooms();
     }
 
+    public void userWinMatch(Long id){
+        if (existsById(id)) {
+            User user = getUser(id);
+            user.setWins(user.getWins() + 1);
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void userLoseMatch(Long id){
+        if (existsById(id)) {
+            User user = getUser(id);
+            user.setLosses(user.getLosses() + 1);
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 
     public boolean existsById(Long id){

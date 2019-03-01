@@ -85,6 +85,7 @@ public class TournamentServiceImpl implements TournamentService {
             tournament.setMasterUser(userId);
             tournament.setStatus(TournamentStatus.RECRUTING);
             tournament.setNumberOfUser(1);  //master jest pierwszym
+            tournament.setMinValueOfRankValue(user.getRankValue());
 
             user.getTournaments().add(tournament);
             userRepository.save(user);

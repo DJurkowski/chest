@@ -42,6 +42,10 @@ public class User {
 
     private Integer rankValue;
 
+    private Long wins;
+
+    private Long losses;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -72,6 +76,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.wins = 0L;
+        this.losses = 0L;
     }
 
     public Long getId() {
@@ -136,5 +142,21 @@ public class User {
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    public Long getWins() {
+        return wins;
+    }
+
+    public void setWins(Long wins) {
+        this.wins = wins;
+    }
+
+    public Long getLosses() {
+        return losses;
+    }
+
+    public void setLosses(Long losses) {
+        this.losses = losses;
     }
 }

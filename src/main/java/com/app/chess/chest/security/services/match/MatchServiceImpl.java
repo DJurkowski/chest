@@ -8,6 +8,7 @@ import com.app.chess.chest.model.match.Match;
 import com.app.chess.chest.model.match.MatchStatus;
 import com.app.chess.chest.repository.MatchRepository;
 import com.app.chess.chest.security.services.Tournament.TournamentService;
+import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,13 @@ public class MatchServiceImpl implements MatchService {
 
     private final MatchRepository matchRepository;
     private final TournamentService tournamentService;
+    private final UserDetailsServiceImpl userService;
 
     @Autowired
-    public MatchServiceImpl(MatchRepository matchRepository, TournamentService tournamentService) {
+    public MatchServiceImpl(MatchRepository matchRepository, TournamentService tournamentService, UserDetailsServiceImpl userService) {
         this.matchRepository = matchRepository;
         this.tournamentService = tournamentService;
+        this.userService = userService;
     }
 
     @Override
@@ -80,6 +83,13 @@ public class MatchServiceImpl implements MatchService {
                     System.out.println("Kto wygral" + matchNow.getWhoWon());
                     if(matchNow.getWhoWon().equals(0L)){
                         matchNow.setWhoWon(match.getWhoWon());
+//                        if z ktory wygral
+                        userService.userWinMatch(match.getWhoWon());
+                        if(match.getUserOneId().equals(match.getWhoWon())){
+                            userService.userLoseMatch(match.getuserTwoId());
+                        }else {
+                            userService.userLoseMatch(match.getUserOneId());
+                        }
                     }
                     int numberOfMatch = matchNow.getTournament().getMatches().size();
                     int finished = 0;
