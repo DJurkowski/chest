@@ -2,7 +2,9 @@ package com.app.chess.chest.security.services;
 
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
+import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
+import com.app.chess.chest.repository.NotificationRepository;
 import com.app.chess.chest.repository.RoomRepository;
 import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.room.RoomServiceImpl;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -22,12 +25,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoomServiceImpl roomService;
     private final RoomRepository roomRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository, NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
         this.roomService = roomService;
         this.roomRepository = roomRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -97,13 +102,30 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     userRepository.save(user);
                 }
             }
-
     }
 
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
 
         return user.getRooms();
+    }
+
+    public Set<Notification> getNotifications(Long id) {
+        if (existsById(id)) {
+            User user = getUser(id);
+            return user.getNotifications();
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void createNotification(Notification notification){
+        if (existsById(notification.getToUser())) {
+            User user = getUser(notification.getToUser());
+            user.getNotifications().add(notification);
+            notificationRepository.save(notification);
+            userRepository.save(user);
+        }
     }
 
     public void userWinMatch(Long id){
@@ -125,8 +147,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
     }
-
-
 
     public boolean existsById(Long id){
         return userRepository.existsById(id);

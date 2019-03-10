@@ -1,6 +1,7 @@
 package com.app.chess.chest.model;
 
 import com.app.chess.chest.model.Tournament.Tournament;
+import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NaturalId;
@@ -69,6 +70,10 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "room_id")}
     )
     private List<Room> rooms = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "user", allowSetters = true)
+    private Set<Notification> notifications = new TreeSet<>();
 
     public User() {}
 
@@ -158,5 +163,13 @@ public class User {
 
     public void setLosses(Long losses) {
         this.losses = losses;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

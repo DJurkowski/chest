@@ -81,6 +81,7 @@ public class MatchServiceImpl implements MatchService {
                 matchNow.setStatus(match.getStatus());
                 if(matchNow.getStatus().equals(MatchStatus.FINISHED)){
                     System.out.println("Kto wygral" + matchNow.getWhoWon());
+                    System.out.println("Kto wygral match: " + match.getWhoWon());
                     if(matchNow.getWhoWon().equals(0L)){
                         matchNow.setWhoWon(match.getWhoWon());
 //                        if z ktory wygral

@@ -1,5 +1,6 @@
 package com.app.chess.chest.controller;
 
+import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import com.app.chess.chest.security.services.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -20,11 +21,13 @@ public class WebSocketController {
 
     private final SimpMessagingTemplate template;
     private final RoomService roomService;
+    private final UserDetailsServiceImpl userService;
 
     @Autowired
-    public WebSocketController(SimpMessagingTemplate template, RoomService roomService) {
+    public WebSocketController(SimpMessagingTemplate template, RoomService roomService, UserDetailsServiceImpl userService) {
         this.template = template;
         this.roomService = roomService;
+        this.userService = userService;
     }
 
     @MessageMapping("/{roomId}")
@@ -39,5 +42,11 @@ public class WebSocketController {
     public void sendMessageToGameRoom(@NotNull String message, @DestinationVariable String gameRoomId) throws IOException{
         this.template.convertAndSend("/gameRoom/"+gameRoomId, message);
         System.out.println(" message:" + message + " gameRoom: "+ gameRoomId);
+    }
+
+    @MessageMapping("/notifi/{userToId}")
+    public void sendNotificationMessage(@NotNull String message, @DestinationVariable Long userToId) throws IOException{
+        this.template.convertAndSend("/notification/" + userService.getUsername(userToId), message);
+
     }
 }
