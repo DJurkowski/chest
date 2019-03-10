@@ -18,6 +18,6 @@ public class WebSocketConfiguration extends AbstractWebSocketMessageBrokerConfig
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/api")
-                .enableSimpleBroker("/privateRoom", "/gameRoom", "/notification");
+                .enableSimpleBroker("/privateRoom", "/gameRoom", "/notification", "/privateMessage");
     }
 }
