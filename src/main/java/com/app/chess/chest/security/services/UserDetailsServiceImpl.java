@@ -25,14 +25,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoomServiceImpl roomService;
     private final RoomRepository roomRepository;
-    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository, NotificationRepository notificationRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository) {
         this.userRepository = userRepository;
         this.roomService = roomService;
         this.roomRepository = roomRepository;
-        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -110,24 +108,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user.getRooms();
     }
 
-    public Set<Notification> getNotifications(Long id) {
-        if (existsById(id)) {
-            User user = getUser(id);
-            return user.getNotifications();
-        } else {
-            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public void createNotification(Notification notification){
-        if (existsById(notification.getToUser())) {
-            User user = getUser(notification.getToUser());
-            user.getNotifications().add(notification);
-            notificationRepository.save(notification);
-            userRepository.save(user);
-        }
-    }
-
     public void userWinMatch(Long id){
         if (existsById(id)) {
             User user = getUser(id);
@@ -146,6 +126,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } else {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 
     public boolean existsById(Long id){

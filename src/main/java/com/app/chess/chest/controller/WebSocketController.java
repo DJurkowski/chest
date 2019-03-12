@@ -1,6 +1,7 @@
 package com.app.chess.chest.controller;
 
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
+import com.app.chess.chest.security.services.notification.NotificationService;
 import com.app.chess.chest.security.services.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -8,7 +9,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
@@ -23,14 +23,16 @@ public class WebSocketController {
     private final SimpMessagingTemplate template;
     private final RoomService roomService;
     private final UserDetailsServiceImpl userService;
+    private final NotificationService notificationService;
 
     private String[] messageTab = null;
 
     @Autowired
-    public WebSocketController(SimpMessagingTemplate template, RoomService roomService, UserDetailsServiceImpl userService) {
+    public WebSocketController(SimpMessagingTemplate template, RoomService roomService, UserDetailsServiceImpl userService, NotificationService notificationService) {
         this.template = template;
         this.roomService = roomService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @MessageMapping("/{roomId}")
@@ -71,6 +73,7 @@ public class WebSocketController {
                 break;
             case "noti":
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
+                notificationService.createNotification(messageTab[4], userService.getUserId(messageTab[2]), Long.parseLong(messageTab[3]));
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
         }
