@@ -18,6 +18,8 @@ public class Match {
     private MatchStatus status;
     private Long userOneId;
     private Long userTwoId;
+    private Boolean userOneReady;
+    private Boolean userTwoReady;
     private Boolean showMatch;
     private Long whoWon;
 
@@ -88,6 +90,22 @@ public class Match {
 
     public void setShowMatch(Boolean showMatch) {
         this.showMatch = showMatch;
+    }
+
+    public Boolean getUserOneReady() {
+        return userOneReady;
+    }
+
+    public void setUserOneReady(Boolean userOneReady) {
+        this.userOneReady = userOneReady;
+    }
+
+    public Boolean getUserTwoReady() {
+        return userTwoReady;
+    }
+
+    public void setUserTwoReady(Boolean userTwoReady) {
+        this.userTwoReady = userTwoReady;
     }
 
 }

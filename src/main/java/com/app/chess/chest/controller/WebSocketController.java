@@ -1,6 +1,7 @@
 package com.app.chess.chest.controller;
 
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
+import com.app.chess.chest.security.services.match.MatchService;
 import com.app.chess.chest.security.services.notification.NotificationService;
 import com.app.chess.chest.security.services.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,44 +25,49 @@ public class WebSocketController {
     private final RoomService roomService;
     private final UserDetailsServiceImpl userService;
     private final NotificationService notificationService;
+    private final MatchService matchService;
 
     private String[] messageTab = null;
+    private String[] messageSwitch = null;
+    private String messageOut = "";
 
     @Autowired
-    public WebSocketController(SimpMessagingTemplate template, RoomService roomService, UserDetailsServiceImpl userService, NotificationService notificationService) {
+    public WebSocketController(SimpMessagingTemplate template, RoomService roomService, UserDetailsServiceImpl userService, NotificationService notificationService, MatchService matchService) {
         this.template = template;
         this.roomService = roomService;
         this.userService = userService;
         this.notificationService = notificationService;
+        this.matchService = matchService;
     }
 
-    @MessageMapping("/{roomId}")
-    public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
-        String messageOut = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" - "+message;
-        this.template.convertAndSend("/privateRoom/" + roomId, messageOut);
-        roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
-        System.out.println("message: "+ message + " room: "+ roomId);
-    }
-
-    @MessageMapping ("/game/{gameRoomId}")
-    public void sendMessageToGameRoom(@NotNull String message, @DestinationVariable String gameRoomId) throws IOException{
-        this.template.convertAndSend("/gameRoom/"+gameRoomId, message);
-        System.out.println(" message:" + message + " gameRoom: "+ gameRoomId);
-    }
-
-    @MessageMapping("/notifi/{userToId}")
-    public void sendNotificationMessage(@NotNull String message, @DestinationVariable Long userToId) throws IOException{
-        this.template.convertAndSend("/notification/" + userService.getUsername(userToId), message);
-
-    }
+//    @MessageMapping("/{roomId}")
+//    public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
+//        String messageOut = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" - "+message;
+//        this.template.convertAndSend("/privateRoom/" + roomId, messageOut);
+//        roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
+//        System.out.println("message: "+ message + " room: "+ roomId);
+//    }
+//
+//    @MessageMapping ("/game/{gameRoomId}")
+//    public void sendMessageToGameRoom(@NotNull String message, @DestinationVariable String gameRoomId) throws IOException{
+//        this.template.convertAndSend("/gameRoom/"+gameRoomId, message);
+//        System.out.println(" message:" + message + " gameRoom: "+ gameRoomId);
+//    }
+//
+//    @MessageMapping("/notifi/{userToId}")
+//    public void sendNotificationMessage(@NotNull String message, @DestinationVariable Long userToId) throws IOException{
+//        this.template.convertAndSend("/notification/" + userService.getUsername(userToId), message);
+//
+//    }
 
     @MessageMapping("/websocket/{userToId}")
     public void sendWebSocketMessage(@NotNull String message, @DestinationVariable String userToId) throws IOException{
-        String messageOut = "";
-        messageTab = message.split(";", 5);
-        System.out.println("Jestem MEssage Tab" + messageTab[0] );
-        switch(messageTab[0]){
+//        messageTab = message.split(";", 5);
+//        System.out.println("Jestem MEssage Tab" + messageTab[0] );
+          messageSwitch = message.split(";",2);
+        switch(messageSwitch[0]){
             case "chat":
+                messageTab = message.split(";", 5);
                 String messageDisplay = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+ " - " +" @" + messageTab[2] + " : " + messageTab[4];
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + messageTab[3] + ";" + messageDisplay;
                 this.template.convertAndSend("/privateMessage/" + messageTab[3], messageOut);
@@ -70,10 +76,26 @@ public class WebSocketController {
                 break;
             case "game":
 //                dopisac logike do gry
+                messageTab = message.split(";", 5);
+                messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + userService.getUsername(Long.parseLong(messageTab[2])) + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
+                this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
             case "noti":
+                messageTab = message.split(";", 5);
+                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = noti");
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
                 notificationService.createNotification(messageTab[4], userService.getUserId(messageTab[2]), Long.parseLong(messageTab[3]));
+                this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
+                break;
+            case "ready":
+                messageTab = message.split(";", 5);
+                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = ready");
+                if(Boolean.parseBoolean(messageTab[4])){
+                    matchService.userStatusMatchUpdate(matchService.getMatchByName(messageTab[1]), userService.getUserId(messageTab[2]), Boolean.parseBoolean(messageTab[4]));
+                } else {
+                    matchService.userStatusMatchUpdate(matchService.getMatchByName(messageTab[1]), Long.parseLong(messageTab[3]), Boolean.parseBoolean(messageTab[4]));
+                }
+                messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
         }

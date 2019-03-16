@@ -41,6 +41,11 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public Long getMatchByName(String name) {
+        return matchRepository.findByName(name).get().getId();
+    }
+
+    @Override
     public void createMatch(Match match, Tournament tournament, Long user1Id, Long user2Id) {
         if (match.getId() != null) {
             throw new AlreadyExistsException(Match.class.getSimpleName() + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
@@ -48,6 +53,8 @@ public class MatchServiceImpl implements MatchService {
             match.setTournament(tournament);
             match.setUserOneId(user1Id);
             match.setuserTwoId(user2Id);
+            match.setUserOneReady(false);
+            match.setUserTwoReady(false);
             match.setStatus(MatchStatus.STANDBY);
             if (!tournament.getStatus().equals(TournamentStatus.STANDBY)) {
                 tournament.setStatus(TournamentStatus.STANDBY);
@@ -115,6 +122,22 @@ public class MatchServiceImpl implements MatchService {
             throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public void userStatusMatchUpdate(Long id, Long userId, Boolean status) {
+        if(existsById(id)){
+            Match matchNow = getMatch(id);
+            if(matchNow.getUserOneId().equals(userId)) {
+                matchNow.setUserOneReady(status);
+            } else if(matchNow.getuserTwoId().equals(userId)) {
+                matchNow.setUserTwoReady(status);
+            }
+            matchRepository.save(matchNow);
+        }else {
+        throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+    }
+    }
+
 
     public boolean existsById(Long id){ return matchRepository.existsById(id);}
 }
