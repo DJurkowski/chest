@@ -22,6 +22,7 @@ public class Match {
     private Boolean userTwoReady;
     private Boolean showMatch;
     private Long whoWon;
+    private Long startGameUser;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tournament_id")
@@ -108,4 +109,11 @@ public class Match {
         this.userTwoReady = userTwoReady;
     }
 
+    public Long getStartGameUser() {
+        return startGameUser;
+    }
+
+    public void setStartGameUser(Long startGameUser) {
+        this.startGameUser = startGameUser;
+    }
 }
