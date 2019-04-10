@@ -7,9 +7,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Entity
 @Table(name = "rooms")
@@ -29,7 +28,7 @@ public class Room {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "room", cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "room", allowSetters = true)
-    private Set<Message> messages = new TreeSet<>();
+    private List<Message> messages = new LinkedList<>();
 
     public Room(){}
 
@@ -78,11 +77,11 @@ public class Room {
         this.users = users;
     }
 
-    public Set<Message> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -39,9 +41,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Set<Message> getMessages(Long id) {
+    public List<Message> getMessages(Long id) {
         Room room = getRoom(id);
-        return room.getMessages();
+        List messageList = room.getMessages();
+        Collections.reverse(messageList);
+        return messageList;
     }
 
     @Override

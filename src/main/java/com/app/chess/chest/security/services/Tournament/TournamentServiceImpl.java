@@ -48,7 +48,9 @@ public class TournamentServiceImpl implements TournamentService {
                     }
                 }
                 if (flag == false) {
-                    result.add(tour);
+                    if(TournamentStatus.RECRUTING.equals(tour.getStatus())){
+                        result.add(tour);
+                    }
                 }else {
                     flag = false;
                 }
