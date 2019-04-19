@@ -40,30 +40,10 @@ public class WebSocketController {
         this.matchService = matchService;
     }
 
-//    @MessageMapping("/{roomId}")
-//    public void sendMessageToPrivateRoom(@NotNull String message, @DestinationVariable String roomId) throws IOException{
-//        String messageOut = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" - "+message;
-//        this.template.convertAndSend("/privateRoom/" + roomId, messageOut);
-//        roomService.addMessageToMessageList( messageOut, roomService.getRoomId(roomId));
-//        System.out.println("message: "+ message + " room: "+ roomId);
-//    }
-//
-//    @MessageMapping ("/game/{gameRoomId}")
-//    public void sendMessageToGameRoom(@NotNull String message, @DestinationVariable String gameRoomId) throws IOException{
-//        this.template.convertAndSend("/gameRoom/"+gameRoomId, message);
-//        System.out.println(" message:" + message + " gameRoom: "+ gameRoomId);
-//    }
-//
-//    @MessageMapping("/notifi/{userToId}")
-//    public void sendNotificationMessage(@NotNull String message, @DestinationVariable Long userToId) throws IOException{
-//        this.template.convertAndSend("/notification/" + userService.getUsername(userToId), message);
-//
-//    }
+
 
     @MessageMapping("/websocket/{userToId}")
     public void sendWebSocketMessage(@NotNull String message, @DestinationVariable String userToId) throws IOException{
-//        messageTab = message.split(";", 5);
-//        System.out.println("Jestem MEssage Tab" + messageTab[0] );
           messageSwitch = message.split(";",2);
         switch(messageSwitch[0]){
             case "chat":
@@ -84,7 +64,7 @@ public class WebSocketController {
                 messageTab = message.split(";", 5);
                 System.out.println("Jestem MEssage Tab" + messageTab[0] + " = noti");
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
-                notificationService.createNotification(messageTab[4], userService.getUserId(messageTab[2]), Long.parseLong(messageTab[3]));
+                notificationService.createNotification(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " : " + messageTab[4], userService.getUserId(messageTab[2]), Long.parseLong(messageTab[3]));
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
             case "ready":

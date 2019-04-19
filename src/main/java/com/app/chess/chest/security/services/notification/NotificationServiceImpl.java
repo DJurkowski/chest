@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -29,8 +31,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public Set<Notification> getNotifications(String id) {
-        return userService.getUser(userService.getUserId(id)).getNotifications();
+    public List<Notification> getNotifications(String id) {
+        List<Notification> notifications = userService.getUser(userService.getUserId(id)).getNotifications();
+        Collections.reverse(notifications);
+        return notifications;
     }
 
     @Override

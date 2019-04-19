@@ -73,7 +73,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "user", allowSetters = true)
-    private Set<Notification> notifications = new TreeSet<>();
+    private List<Notification> notifications = new LinkedList<>();
 
     public User() {}
 
@@ -165,11 +165,20 @@ public class User {
         this.losses = losses;
     }
 
-    public Set<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
+    public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    //    public Set<Notification> getNotifications() {
+//        return notifications;
+//    }
+//
+//    public void setNotifications(Set<Notification> notifications) {
+//        this.notifications = notifications;
+//    }
+
 }
