@@ -66,11 +66,31 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userRepository.findByUsername(username).get().getId();
     }
 
-    public Long modifyUser(User user) {
-        if (existsById(user.getId())) {
-            return userRepository.save(user).getId();
-        } else {
-            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+//    public Long modifyUser(User user) {
+//        if (existsById(user.getId())) {
+//            return userRepository.save(user).getId();
+//        } else {
+//            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    public void updateUser(String userId, User user){
+        if(existsById(getUserId(userId))){
+            User userNow = getUser(getUserId(userId));
+            if(!userNow.getAvailable().equals(user.getAvailable())){
+                userNow.setAvailable(user.getAvailable());
+            }
+            save(userNow);
+        }
+    }
+
+    public void userAvailable(String userId, Boolean available) {
+        if(existsById(getUserId(userId))){
+            User userNow = getUser(getUserId(userId));
+            if(!userNow.getAvailable().equals(available)){
+                userNow.setAvailable(available);
+            }
+            save(userNow);
         }
     }
 

@@ -47,6 +47,8 @@ public class User {
 
     private Long losses;
 
+    private Boolean available;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -173,12 +175,11 @@ public class User {
         this.notifications = notifications;
     }
 
-    //    public Set<Notification> getNotifications() {
-//        return notifications;
-//    }
-//
-//    public void setNotifications(Set<Notification> notifications) {
-//        this.notifications = notifications;
-//    }
+    public Boolean getAvailable() {
+        return available;
+    }
 
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
 }

@@ -109,6 +109,7 @@ public class AuthenticationController {
 
         user.setRankValue(1);   //RankValue ustalamy
         user.setRoles(roles);
+        user.setAvailable(true);
         userRepository.save(user);
         userService.creatingRooms(user);
         //        tworzymy pokoje do czatow dla z kazdym uzyrkownikiem
