@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,6 +112,7 @@ public class AuthenticationController {
         user.setRankValue(1);   //RankValue ustalamy
         user.setRoles(roles);
         user.setAvailable(true);
+        user.setJoined(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         userRepository.save(user);
         userService.creatingRooms(user);
         //        tworzymy pokoje do czatow dla z kazdym uzyrkownikiem

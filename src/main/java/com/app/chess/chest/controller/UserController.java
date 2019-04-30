@@ -49,6 +49,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
+    @GetMapping("/user/profil/{userId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getUserProfil(@PathVariable("userId") String userId){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userService.getUserId(userId)));
+    }
+
     @PutMapping("/user/{userId}/mod")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity userAvailable(@PathVariable("userId") String userId, @RequestBody String available) {

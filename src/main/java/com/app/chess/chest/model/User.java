@@ -47,6 +47,8 @@ public class User {
 
     private Long losses;
 
+    private String joined;
+
     private Boolean available;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -181,5 +183,13 @@ public class User {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public String getJoined() {
+        return joined;
+    }
+
+    public void setJoined(String joined) {
+        this.joined = joined;
     }
 }
