@@ -94,6 +94,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
+    public void userEdit(String userId, String email) {
+        if(existsById(getUserId(userId))){
+            User userNow = getUser(getUserId(userId));
+            if(!userNow.getEmail().equals(email)){
+                userNow.setEmail(email);
+            }
+            save(userNow);
+        }
+    }
+
     public void deleteUser(Long id) {
         if (existsById(id)) {
             User user = getUser(id);

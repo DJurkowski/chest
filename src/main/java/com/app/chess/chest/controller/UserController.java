@@ -1,6 +1,7 @@
 package com.app.chess.chest.controller;
 
 import com.app.chess.chest.message.response.APIResponse;
+import com.app.chess.chest.message.response.ResponseMessage;
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
@@ -63,5 +64,17 @@ public class UserController {
 
     }
 
+    @PutMapping("/user/{userId}/edi")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity userEdit(@PathVariable("userId") String userId, @RequestBody String email) {
+
+        if (userRepository.existsByEmail(email)) {
+            return new ResponseEntity<>(new ResponseMessage("Email is already in use!"),
+                    HttpStatus.BAD_REQUEST);
+        } else {
+            userService.userEdit(userId, email);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+    }
 
 }
