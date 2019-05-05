@@ -23,6 +23,7 @@ public class Match {
     private Boolean showMatch;
     private Long whoWon;
     private Long startGameUser;
+    private Integer matchTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tournament_id")
@@ -116,4 +117,8 @@ public class Match {
     public void setStartGameUser(Long startGameUser) {
         this.startGameUser = startGameUser;
     }
+
+    public Integer getMatchTime() { return matchTime; }
+
+    public void setMatchTime(Integer matchTime) { this.matchTime = matchTime; }
 }

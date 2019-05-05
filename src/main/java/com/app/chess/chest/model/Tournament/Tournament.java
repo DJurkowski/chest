@@ -34,6 +34,7 @@ public class Tournament {
     private Integer maxNumberOfUser;
     private Integer numberOfUser;
     private Long masterUser;
+    private Integer matchTime;
 
     @JsonIgnoreProperties(value = "tournaments", allowSetters = true)
     @ManyToMany(mappedBy = "tournaments")
@@ -139,4 +140,8 @@ public class Tournament {
     public void setMatches(List<Match> matches) {
         this.matches = matches;
     }
+
+    public Integer getMatchTime() { return matchTime; }
+
+    public void setMatchTime(Integer matchTime) { this.matchTime = matchTime; }
 }

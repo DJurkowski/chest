@@ -66,6 +66,7 @@ public class MatchServiceImpl implements MatchService {
                 match.setStatus(MatchStatus.STANDBY);
                 match.setShowMatch(false);
                 match.setWhoWon(0L);
+                match.setMatchTime(tournament.getMatchTime());
                 matchRepository.save(match);
             }
         }
