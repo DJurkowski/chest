@@ -55,6 +55,10 @@ public class MatchServiceImpl implements MatchService {
             match.setuserTwoId(user2Id);
             match.setUserOneReady(false);
             match.setUserTwoReady(false);
+            match.setUserOneMoves(0);
+            match.setUserTwoMoves(0);
+            match.setUserOneRoundsTime(0L);
+            match.setUserTwoRoundsTime(0L);
             match.setStatus(MatchStatus.STANDBY);
             if (!tournament.getStatus().equals(TournamentStatus.STANDBY)) {
                 tournament.setStatus(TournamentStatus.STANDBY);
@@ -85,23 +89,48 @@ public class MatchServiceImpl implements MatchService {
     public void updateMatch(Long id, Match match) {
         if(existsById(id)){
             Match matchNow = getMatch(id);
+            System.out.println("Jestem w updateMatch przed if");
+//            dlatego to kurwa nie wchodzi
             if(!matchNow.getStatus().equals(match.getStatus())){
                 matchNow.setStatus(match.getStatus());
+            }
+//            zmiana
                 if(matchNow.getStatus().equals(MatchStatus.STARTED)){
                     matchNow.setStartGameUser(match.getStartGameUser());
                 }
                 if(matchNow.getStatus().equals(MatchStatus.FINISHED)){
-                    System.out.println("Kto wygral" + matchNow.getWhoWon());
-                    System.out.println("Kto wygral match: " + match.getWhoWon());
+//                    System.out.println("Kto wygral" + matchNow.getWhoWon());
+//                    System.out.println("Kto wygral match: " + match.getWhoWon());
+                    System.out.println("Jestem w updateMatch po if-ach");
                     if(matchNow.getWhoWon().equals(0L)){
-                        matchNow.setWhoWon(match.getWhoWon());
+
 //                        if z ktory wygral
-                        userService.userWinMatch(match.getWhoWon());
+                        if(match.getWhoWon() != 0){
+                            matchNow.setWhoWon(match.getWhoWon());
+                            userService.userWinMatch(match.getWhoWon());
+                        }
                         if(match.getUserOneId().equals(match.getWhoWon())){
                             userService.userLoseMatch(match.getuserTwoId());
                         }else {
                             userService.userLoseMatch(match.getUserOneId());
                         }
+                    }
+                    if(matchNow.getUserOneMoves().equals(0) && match.getUserOneMoves() != 0){
+                        matchNow.setUserOneMoves(match.getUserOneMoves());
+                        userService.userMovesCounter(matchNow.getUserOneId(), match.getUserOneMoves());
+                    }
+                    if(matchNow.getUserTwoMoves().equals(0) && match.getUserTwoMoves() != 0){
+                        matchNow.setUserTwoMoves(match.getUserTwoMoves());
+                        userService.userMovesCounter(matchNow.getuserTwoId(), match.getUserTwoMoves());
+                    }
+                    if(matchNow.getUserOneRoundsTime().equals(0L) && match.getUserOneRoundsTime() != 0){
+                        matchNow.setUserOneRoundsTime(match.getUserOneRoundsTime());
+                        userService.userRoundTimeCounter(matchNow.getUserOneId(), match.getUserOneRoundsTime());
+                    }
+                    if(matchNow.getUserTwoRoundsTime().equals(0L) && match.getUserTwoRoundsTime() != 0){
+                        matchNow.setUserTwoRoundsTime(match.getUserTwoRoundsTime());
+                        userService.userRoundTimeCounter(matchNow.getuserTwoId(), match.getUserTwoRoundsTime());
+
                     }
                     int numberOfMatch = matchNow.getTournament().getMatches().size();
                     int finished = 0;
@@ -116,9 +145,9 @@ public class MatchServiceImpl implements MatchService {
                         tournamentService.updateTournament(tour);
                     }
                 }
-            }
+
             if(!matchNow.getShowMatch().equals(match.getShowMatch())){
-                System.out.println("Jestme status: " + match.getShowMatch() );
+//                System.out.println("Jestme status: " + match.getShowMatch() );
                 matchNow.setShowMatch(match.getShowMatch());
             }
             matchRepository.save(matchNow);
@@ -139,8 +168,10 @@ public class MatchServiceImpl implements MatchService {
             matchRepository.save(matchNow);
         }else {
         throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
     }
-    }
+
+
 
 
     public boolean existsById(Long id){ return matchRepository.existsById(id);}

@@ -21,17 +21,10 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-
     @GetMapping("/user/{userId}/notifications")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getNotifications(@PathVariable("userId") String userId){
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotifications(userId));
     }
 
-//    @PostMapping("/user/{userId}/notification")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-//    public ResponseEntity<?> createNotification(@PathVariable("userId") String userId, @Valid @RequestBody Notification notification){
-//        userService.createNotification(notification);
-//        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
-//    }
 }

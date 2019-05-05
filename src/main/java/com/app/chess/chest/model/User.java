@@ -17,9 +17,6 @@ import java.util.*;
         @UniqueConstraint(columnNames = {
                 "username"
         })
-//        @UniqueConstraint(columnNames = {
-//                "email"
-//        })
 })
 public class User {
 
@@ -47,6 +44,10 @@ public class User {
     private Long wins;
 
     private Long losses;
+
+    private Long movesSum;
+
+    private Long roundTime;
 
     private String joined;
 
@@ -190,7 +191,13 @@ public class User {
         return joined;
     }
 
-    public void setJoined(String joined) {
-        this.joined = joined;
-    }
+    public void setJoined(String joined) { this.joined = joined; }
+
+    public Long getMovesSum() { return movesSum; }
+
+    public void setMovesSum(Long movesSum) { this.movesSum = movesSum; }
+
+    public Long getRoundTime() { return roundTime; }
+
+    public void setRoundTime(Long roundTime) { this.roundTime = roundTime; }
 }

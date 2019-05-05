@@ -59,20 +59,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .findById(id)
                 .get()
                 .getUsername();
-//                .orElseThrow(()-> new NotFoundException(NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
     }
 
     public Long getUserId(String username) {
         return userRepository.findByUsername(username).get().getId();
     }
 
-//    public Long modifyUser(User user) {
-//        if (existsById(user.getId())) {
-//            return userRepository.save(user).getId();
-//        } else {
-//            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     public void updateUser(String userId, User user){
         if(existsById(getUserId(userId))){
@@ -152,6 +144,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (existsById(id)) {
             User user = getUser(id);
             user.setLosses(user.getLosses() + 1);
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void userMovesCounter(Long id, Integer moves) {
+        System.out.println("Moves you: " + moves);
+        if(existsById(id)){
+            User user = getUser(id);
+            user.setMovesSum(user.getMovesSum() + Long.valueOf(moves));
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void userRoundTimeCounter(Long id, Long time) {
+        if(existsById(id)){
+            User user = getUser(id);
+            user.setRoundTime(user.getRoundTime() + time);
             userRepository.save(user);
         } else {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);

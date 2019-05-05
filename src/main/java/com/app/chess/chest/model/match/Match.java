@@ -20,6 +20,10 @@ public class Match {
     private Long userTwoId;
     private Boolean userOneReady;
     private Boolean userTwoReady;
+    private Integer userOneMoves;
+    private Integer userTwoMoves;
+    private Long userOneRoundsTime;
+    private Long userTwoRoundsTime;
     private Boolean showMatch;
     private Long whoWon;
     private Long startGameUser;
@@ -121,4 +125,20 @@ public class Match {
     public Integer getMatchTime() { return matchTime; }
 
     public void setMatchTime(Integer matchTime) { this.matchTime = matchTime; }
+
+    public Integer getUserOneMoves() { return userOneMoves; }
+
+    public void setUserOneMoves(Integer userOneMoves) { this.userOneMoves = userOneMoves; }
+
+    public Integer getUserTwoMoves() { return userTwoMoves; }
+
+    public void setUserTwoMoves(Integer userTwoMoves) { this.userTwoMoves = userTwoMoves; }
+
+    public Long getUserOneRoundsTime() { return userOneRoundsTime; }
+
+    public void setUserOneRoundsTime(Long userOneRoundsTime) { this.userOneRoundsTime = userOneRoundsTime; }
+
+    public Long getUserTwoRoundsTime() { return userTwoRoundsTime; }
+
+    public void setUserTwoRoundsTime(Long userTwoRoundsTime) { this.userTwoRoundsTime = userTwoRoundsTime; }
 }

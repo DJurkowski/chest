@@ -113,6 +113,8 @@ public class AuthenticationController {
         user.setRoles(roles);
         user.setAvailable(true);
         user.setJoined(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        user.setMovesSum(0L);
+        user.setRoundTime(0L);
         userRepository.save(user);
         userService.creatingRooms(user);
         //        tworzymy pokoje do czatow dla z kazdym uzyrkownikiem
