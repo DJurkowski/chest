@@ -10,4 +10,5 @@ public interface NotificationService {
     List<Notification> getNotifications(String id);
     void createNotification(String message, Long fromUser, Long toUser);
     void updateNotification(Long id, Notification notification);
+    void deleteNotification(Long id);
 }

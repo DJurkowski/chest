@@ -60,6 +60,15 @@ public class NotificationServiceImpl implements NotificationService{
         }
     }
 
+    @Override
+    public void deleteNotification(Long id) {
+        if (existsById(id)) {
+            notificationRepository.deleteById(id);
+        } else {
+            throw new NotFoundException(Notification.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
     public boolean existsById(Long id){ return notificationRepository.existsById(id);}
 
 }

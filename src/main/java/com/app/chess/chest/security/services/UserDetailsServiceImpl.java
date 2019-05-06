@@ -4,7 +4,6 @@ import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
-import com.app.chess.chest.repository.NotificationRepository;
 import com.app.chess.chest.repository.RoomRepository;
 import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.room.RoomServiceImpl;
@@ -16,8 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -126,7 +125,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
-
         return user.getRooms();
     }
 
@@ -166,6 +164,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             User user = getUser(id);
             user.setRoundTime(user.getRoundTime() + time);
             userRepository.save(user);
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void deleteNotification(Long id, Long notificationId){
+        if(existsById(id)){
+            User user = getUser(id);
+
+            for(Iterator<Notification> it = user.getNotifications().iterator(); it.hasNext();){
+                Notification notification = it.next();
+                if(notification.getId().equals(notificationId)){
+                    it.remove();
+                    userRepository.save(user);
+                    return;
+                }
+            }
         } else {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
