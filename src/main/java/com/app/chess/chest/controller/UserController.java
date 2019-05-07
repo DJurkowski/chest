@@ -77,4 +77,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
     }
 
+    @DeleteMapping("/user/{userId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity deleteUser(@PathVariable("userId") String userId){
+        userService.deleteUser(userService.getUserId(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+    }
+
 }

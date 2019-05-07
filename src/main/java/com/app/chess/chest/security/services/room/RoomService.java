@@ -11,4 +11,5 @@ public interface RoomService {
     void addMessageToMessageList(String message, Long roomId);
     Long getRoomId(String roomName);
     List<Message> getMessages(Long id);
+    void delete(Long id);
 }

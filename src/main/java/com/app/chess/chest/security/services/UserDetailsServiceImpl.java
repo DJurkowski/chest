@@ -1,7 +1,10 @@
 package com.app.chess.chest.security.services;
 
+import com.app.chess.chest.model.Tournament.Tournament;
+import com.app.chess.chest.model.Tournament.TournamentStatus;
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
+import com.app.chess.chest.model.exceptions.ValueException;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
 import com.app.chess.chest.repository.RoomRepository;
@@ -95,16 +98,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
-    public void deleteUser(Long id) {
-        if (existsById(id)) {
-            User user = getUser(id);
-//            Usuwanie pokoji chatu przy usuwaniu uzytkownika
-            userRepository.deleteById(id);
-        } else {
-            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
-        }
-    }
-
     public void creatingRooms(User user){
         List<User> users = getUsers();
             for (User userCheck : users) {
@@ -181,6 +174,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     return;
                 }
             }
+        } else {
+            throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void deleteUser(Long id) {
+        if (existsById(id)) {
+            User user = getUser(id);
+            for(Tournament tour: user.getTournaments()){
+                if(!tour.getStatus().equals(TournamentStatus.FINISHED)){
+                    throw new ValueException("You must finish yours tournaments", HttpStatus.BAD_REQUEST);
+                }
+            }
+//            Usuwanie pokoji chatu przy usuwaniu uzytkownika
+            for(Iterator<Room> ro = user.getRooms().iterator(); ro.hasNext();){
+                Room room = ro.next();
+                if(room.getUser1Id().equals(user.getId()) || room.getUser2Id().equals(user.getId())){
+                    ro.remove();
+                    roomService.delete(room.getId());
+                }
+            }
+            userRepository.deleteById(id);
         } else {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }

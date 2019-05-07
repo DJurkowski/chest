@@ -54,4 +54,17 @@ public class RoomServiceImpl implements RoomService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
     }
+
+    @Override
+    public void delete(Long id) {
+        if(existsById(id)){
+            roomRepository.deleteById(id);
+        }else {
+            throw new NotFoundException(Room.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public boolean existsById(Long id){
+        return roomRepository.existsById(id);
+    }
 }
