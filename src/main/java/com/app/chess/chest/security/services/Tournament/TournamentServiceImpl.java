@@ -1,5 +1,6 @@
 package com.app.chess.chest.security.services.Tournament;
 
+import com.app.chess.chest.message.response.ResponseMessage;
 import com.app.chess.chest.model.Tournament.Tournament;
 import com.app.chess.chest.model.Tournament.TournamentStatus;
 import com.app.chess.chest.model.User;
@@ -12,6 +13,7 @@ import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,6 +84,9 @@ public class TournamentServiceImpl implements TournamentService {
         if (!userExistsById(userId)) {
             throw new AlreadyExistsException(Tournament.class.getSimpleName() + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
         } else {
+            if(tournament.getMaxNumberOfUser().equals(1)){
+                throw new ValueException( "The number of users must be more than 1", HttpStatus.BAD_REQUEST);
+            }
             User user = userService.getUser(userId);
 
             tournament.setMasterUser(userId);
