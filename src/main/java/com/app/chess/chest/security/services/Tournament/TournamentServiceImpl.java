@@ -102,9 +102,10 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public Long updateTournament(Tournament tournament, Long userId) {
         if (userExistsById(userId)) {
-            //sprawdzic czy user jest masterem !!!
-            //
             if (existsById(tournament.getId())) {
+                if(tournament.getMaxNumberOfUser().equals(1) && tournament.getMasterUser().equals(userId)){
+                    throw new ValueException( "The number of users must be more than 1", HttpStatus.BAD_REQUEST);
+                }
                 return tournamentRepository.save(tournament).getId();
             } else {
                 throw new NotFoundException(Tournament.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);

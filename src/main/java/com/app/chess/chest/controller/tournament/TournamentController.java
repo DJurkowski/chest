@@ -47,6 +47,12 @@ public class TournamentController {
         return ResponseEntity.status(HttpStatus.OK).body(tournamentService.getTournamentsWithoutUser(userService.getUserId(userId)));
     }
 
+    @GetMapping("/user/{userId}/alltournaments")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getAllTournaments(@PathVariable("userId") String userId){
+        return ResponseEntity.status(HttpStatus.OK).body(tournamentService.getTournaments());
+    }
+
     @PostMapping("/user/{userId}/tournaments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> createTournament(@PathVariable("userId") String userId, @Valid @RequestBody Tournament tournament){
