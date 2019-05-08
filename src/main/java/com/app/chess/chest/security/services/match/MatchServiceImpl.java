@@ -89,8 +89,6 @@ public class MatchServiceImpl implements MatchService {
     public void updateMatch(Long id, Match match) {
         if(existsById(id)){
             Match matchNow = getMatch(id);
-            System.out.println("Jestem w updateMatch przed if");
-//            dlatego to kurwa nie wchodzi
             if(!matchNow.getStatus().equals(match.getStatus())){
                 matchNow.setStatus(match.getStatus());
             }
@@ -99,12 +97,8 @@ public class MatchServiceImpl implements MatchService {
                     matchNow.setStartGameUser(match.getStartGameUser());
                 }
                 if(matchNow.getStatus().equals(MatchStatus.FINISHED)){
-//                    System.out.println("Kto wygral" + matchNow.getWhoWon());
-//                    System.out.println("Kto wygral match: " + match.getWhoWon());
-                    System.out.println("Jestem w updateMatch po if-ach");
                     if(matchNow.getWhoWon().equals(0L)){
 
-//                        if z ktory wygral
                         if(match.getWhoWon() != 0){
                             matchNow.setWhoWon(match.getWhoWon());
                             userService.userWinMatch(match.getWhoWon());
@@ -147,7 +141,6 @@ public class MatchServiceImpl implements MatchService {
                 }
 
             if(!matchNow.getShowMatch().equals(match.getShowMatch())){
-//                System.out.println("Jestme status: " + match.getShowMatch() );
                 matchNow.setShowMatch(match.getShowMatch());
             }
             matchRepository.save(matchNow);
@@ -170,9 +163,6 @@ public class MatchServiceImpl implements MatchService {
         throw new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
     }
-
-
-
 
     public boolean existsById(Long id){ return matchRepository.existsById(id);}
 }

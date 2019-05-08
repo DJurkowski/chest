@@ -1,6 +1,7 @@
 package com.app.chess.chest.model;
 
 import com.app.chess.chest.model.Tournament.Tournament;
+import com.app.chess.chest.model.friend.Friend;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -80,6 +81,15 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "user", allowSetters = true)
     private List<Notification> notifications = new LinkedList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "users", allowSetters = true)
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "friend_id")}
+    )
+    private List<Friend> friends = new ArrayList<>();
 
     public User() {}
 
@@ -200,4 +210,12 @@ public class User {
     public Long getRoundTime() { return roundTime; }
 
     public void setRoundTime(Long roundTime) { this.roundTime = roundTime; }
+
+    public List<Friend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<Friend> friends) {
+        this.friends = friends;
+    }
 }

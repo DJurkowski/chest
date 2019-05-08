@@ -52,7 +52,7 @@ public class WebSocketController {
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + messageTab[3] + ";" + messageDisplay;
                 this.template.convertAndSend("/privateMessage/" + messageTab[3], messageOut);
                 roomService.addMessageToMessageList( messageDisplay, roomService.getRoomId(messageTab[1]));
-                System.out.println("message: "+ messageDisplay + " room: "+ messageTab[1]);
+//                System.out.println("message: "+ messageDisplay + " room: "+ messageTab[1]);
                 break;
             case "game":
 //                dopisac logike do gry
@@ -62,14 +62,14 @@ public class WebSocketController {
                 break;
             case "noti":
                 messageTab = message.split(";", 5);
-                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = noti");
+//                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = noti");
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
                 notificationService.createNotification(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " : " + messageTab[4], userService.getUserId(messageTab[2]), Long.parseLong(messageTab[3]));
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
             case "ready":
                 messageTab = message.split(";", 5);
-                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = ready");
+//                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = ready");
                 if(Boolean.parseBoolean(messageTab[4])){
                     matchService.userStatusMatchUpdate(matchService.getMatchByName(messageTab[1]), userService.getUserId(messageTab[2]), Boolean.parseBoolean(messageTab[4]));
                 } else {
@@ -80,7 +80,7 @@ public class WebSocketController {
                 break;
             case "startGame":
                 messageTab = message.split(";", 5);
-                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = startGame");
+//                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = startGame");
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;

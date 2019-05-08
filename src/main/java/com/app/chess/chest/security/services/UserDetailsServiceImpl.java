@@ -5,10 +5,12 @@ import com.app.chess.chest.model.Tournament.TournamentStatus;
 import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
 import com.app.chess.chest.model.exceptions.ValueException;
+import com.app.chess.chest.model.friend.Friend;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
 import com.app.chess.chest.repository.RoomRepository;
 import com.app.chess.chest.repository.UserRepository;
+import com.app.chess.chest.security.services.friend.FriendService;
 import com.app.chess.chest.security.services.room.RoomServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -27,12 +31,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoomServiceImpl roomService;
     private final RoomRepository roomRepository;
+    private final FriendService friendService;
+
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository, FriendService friendService) {
         this.userRepository = userRepository;
         this.roomService = roomService;
         this.roomRepository = roomRepository;
+        this.friendService = friendService;
     }
 
     @Override
@@ -104,6 +111,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 if (!user.equals(userCheck)) {
                     Room room = new Room(user.getUsername(), userCheck.getUsername());
                     roomRepository.save(room);
+//                    tworzenie przy okazji friend-a
+                    addFriend(user.getId(), userCheck.getId());
                     if(room.getName() == null){
                         room.setName("room" + room.getId());
                         roomRepository.save(room);
@@ -119,6 +128,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public List<Room> getUserRooms(Long id){
         User user = getUser(id);
         return user.getRooms();
+    }
+
+    public List<Friend> getUserFriends(Long id){
+        User user = getUser(id);
+        return user.getFriends();
+    }
+
+    public List<User> getLifOfFriends(Long id){
+        User user = getUser(id);
+        List<User> userList = new ArrayList<>();
+        for(Friend friend: user.getFriends()){
+            if(friend.getUserOneAccept().equals(true) && friend.getUserTwoAccept().equals(true)){
+                userList.add(getUser(friend.getId()));
+            }
+        }
+        return userList;
     }
 
     public void userWinMatch(Long id){
@@ -200,6 +225,35 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
     }
+
+    public void addFriend(Long userOneId, Long userTwoId) {
+        User userOne = getUser(userOneId);
+        User userTwo = getUser(userTwoId);
+
+        Friend friend = new Friend(userOneId, userTwoId, getUsername(userOneId), getUsername(userTwoId));
+
+        friend.setUserOneAccept(false);
+        friend.setUserTwoAccept(false);
+        friendService.save(friend);
+
+        userOne.getFriends().add(friend);
+        userTwo.getFriends().add(friend);
+    }
+
+
+    public void sendInvitation(Long userOneId, Friend friend) {
+        Optional<Friend> friendNow = friendService.getFriend(friend.getId());
+
+            if(!friend.getUserOneAccept().equals(friendNow.get().getUserOneAccept())){
+                friendNow.get().setUserOneAccept(friend.getUserOneAccept());
+
+            } else if(!friend.getUserTwoAccept().equals(friendNow.get().getUserTwoAccept())){
+                friendNow.get().setUserTwoAccept(friend.getUserTwoAccept());
+            }
+        friendService.save(friendNow.get());
+
+    }
+
 
     public void save(User user) {
         userRepository.save(user);

@@ -63,7 +63,11 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void deleteNotification(Long id) {
         if (existsById(id)) {
-            notificationRepository.deleteById(id);
+            try{
+                notificationRepository.deleteById(id);
+            }catch (Exception e){
+                System.out.println("Error COs Chyba!>??");
+            }
         } else {
             throw new NotFoundException(Notification.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
