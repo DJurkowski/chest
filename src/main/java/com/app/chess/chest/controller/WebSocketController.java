@@ -84,6 +84,12 @@ public class WebSocketController {
                 messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
                 this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
                 break;
+                case "startQuickGame":
+                messageTab = message.split(";", 5);
+//                System.out.println("Jestem MEssage Tab" + messageTab[0] + " = startGame");
+                messageOut = messageTab[0] + ";" +  messageTab[1] + ";" + messageTab[2] + ";" + userService.getUsername(Long.parseLong(messageTab[3])) + ";" + messageTab[4];
+                this.template.convertAndSend("/privateMessage/" + userService.getUsername(Long.parseLong(messageTab[3])), messageOut);
+                break;
         }
 
     }

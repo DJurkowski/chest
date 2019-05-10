@@ -2,6 +2,7 @@ package com.app.chess.chest.model;
 
 import com.app.chess.chest.model.Tournament.Tournament;
 import com.app.chess.chest.model.friend.Friend;
+import com.app.chess.chest.model.match.Match;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.model.room.Room;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -68,6 +69,15 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
     private List<Tournament> tournaments = new ArrayList<>();
+
+    @JsonIgnoreProperties(value = "users", allowSetters=true)
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "user_matches",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "match_id")}
+    )
+    private List<Match> matches = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "users", allowSetters = true)
@@ -217,5 +227,13 @@ public class User {
 
     public void setFriends(List<Friend> friends) {
         this.friends = friends;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<Match> matches) {
+        this.matches = matches;
     }
 }

@@ -1,9 +1,14 @@
 package com.app.chess.chest.model.match;
 
 import com.app.chess.chest.model.Tournament.Tournament;
+import com.app.chess.chest.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "matches")
@@ -33,6 +38,11 @@ public class Match {
     @JoinColumn(name = "tournament_id")
     @JsonIgnoreProperties(value = "matches", allowSetters = true)
     private Tournament tournament;
+
+    @JsonIgnoreProperties(value = "matches", allowSetters = true)
+    @ManyToMany(mappedBy = "matches")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<User> users = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -141,4 +151,12 @@ public class Match {
     public Long getUserTwoRoundsTime() { return userTwoRoundsTime; }
 
     public void setUserTwoRoundsTime(Long userTwoRoundsTime) { this.userTwoRoundsTime = userTwoRoundsTime; }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 }
