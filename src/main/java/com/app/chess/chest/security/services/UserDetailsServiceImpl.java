@@ -20,10 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -54,7 +51,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public List<User> getUsers() {
-        return (List<User>) userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        Collections.sort(users, Comparator.comparing(User::getWins).reversed());
+        return users;
     }
 
     public User getUser(Long id) {

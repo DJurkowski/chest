@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getUsers(){
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
     }
 
     @GetMapping("/username/{userId}")
