@@ -17,18 +17,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static final String DICTIONARY = "ABCDEFGHIJKLabcdefghijklmnopqrstuvwxyzMNOPQRS0123456789TUVWXYZ";
+    private static SecureRandom random = new SecureRandom();
+
     private final UserRepository userRepository;
     private final RoomServiceImpl roomService;
     private final RoomRepository roomRepository;
     private final FriendService friendService;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
 
     @Autowired
@@ -56,6 +64,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return users;
     }
 
+
+
     public User getUser(Long id) {
         return userRepository
                 .findById(id)
@@ -73,6 +83,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userRepository.findByUsername(username).get().getId();
     }
 
+    public Optional<User> getUserByMail(String mail){
+            return userRepository.findByEmail(mail);
+    }
 
     public void updateUser(String userId, User user){
         if(existsById(getUserId(userId))){
@@ -253,12 +266,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     }
 
+    public String resetPassword(String mail){
+        String result = "";
+        for (int i = 0; i < 9; i++) {
+            int index = random.nextInt(DICTIONARY.length());
+            result += DICTIONARY.charAt(index);
+        }
+        Optional<User> user = getUserByMail(mail);
+        user.get().setPassword(encoder.encode(result));
+        userRepository.save(user.get());
+        System.out.println("Haslo nowe: " + result);
+        return result;
+    }
+
 
     public void save(User user) {
         userRepository.save(user);
     }
 
-    public boolean existsById(Long id){
-        return userRepository.existsById(id);
-    }
+    public boolean existsById(Long id){ return userRepository.existsById(id); }
+
+    public Boolean existByMail(String mail) { return userRepository.existsByEmail(mail); }
 }

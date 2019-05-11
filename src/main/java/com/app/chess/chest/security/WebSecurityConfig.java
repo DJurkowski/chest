@@ -16,13 +16,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
         prePostEnabled = true
 )
-public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig  extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
@@ -32,6 +34,11 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtAuthTokenFilter authenticationJwtTokenFilter() {
         return new JwtAuthTokenFilter();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
     }
 
     @Override
