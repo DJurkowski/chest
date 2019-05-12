@@ -23,6 +23,8 @@ public class Match {
     private MatchStatus status;
     private Long userOneId;
     private Long userTwoId;
+    private String userOneUsername;
+    private String userTwoUsername;
     private Boolean userOneReady;
     private Boolean userTwoReady;
     private Integer userOneMoves;
@@ -158,5 +160,21 @@ public class Match {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getUserOneUsername() {
+        return userOneUsername;
+    }
+
+    public void setUserOneUsername(String userOneUsername) {
+        this.userOneUsername = userOneUsername;
+    }
+
+    public String getUserTwoUsername() {
+        return userTwoUsername;
+    }
+
+    public void setUserTwoUsername(String userTwoUsername) {
+        this.userTwoUsername = userTwoUsername;
     }
 }

@@ -38,6 +38,12 @@ public class MatchController {
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
     }
 
+    @GetMapping("/user/{userId}/match/{matchId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getMatch(@PathVariable String userId, @PathVariable("matchId") Long matchId){
+        return ResponseEntity.status(HttpStatus.OK).body(matchService.getMatch(matchId));
+    }
+
     @PostMapping("/user/{userId}/match")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> createQuickGame(@PathVariable("userId") String userId, @Valid @RequestBody Match match){
@@ -46,13 +52,6 @@ public class MatchController {
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
     }
 
-//    @PostMapping("/user/{userId}/tournaments/{tournamentId}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-//    public ResponseEntity addUserToTournament(@PathVariable("userId") String userId, @PathVariable("tournamentId") Long tournamentId, @RequestBody Long tourId){
-//        tournamentService.addUserToTournament(tournamentId, userService.getUserId(userId));
-//        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
-//    }
-
     @GetMapping("/user/{userId}/usermatches")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getUserMatches(@PathVariable("userId") String userId){return ResponseEntity.status(HttpStatus.OK).body(matchService.getUserQuickGames(userId));}
@@ -60,6 +59,12 @@ public class MatchController {
     @GetMapping("/user/{userId}/matches")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getQuickGames(@PathVariable("userId") String userId){return ResponseEntity.status(HttpStatus.OK).body(matchService.getQuickGames());}
+
+    @GetMapping("/user/{userId}/quickgames")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getAllQuickGames(@PathVariable("userId") String userId){return ResponseEntity.status(HttpStatus.OK).body(matchService.getAllQuickGames());}
+
+
 
 
 }

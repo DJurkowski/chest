@@ -52,7 +52,23 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public List<Match> getAllQuickGames() {
+        List<Match> matches = new ArrayList<>();
+        for(Match match: matchRepository.findAll()){
+            try{
+                if(match.getTournament()== null){
+                    matches.add(match);
+                }
+            }catch(NullPointerException e){}
+        }
+        return matches;
+    }
+
+    @Override
     public Match getMatch(Long id) {
+        for(User user: matchRepository.findById(id).get().getUsers()){
+            System.out.println(user.getUsername());
+        }
         return matchRepository.findById(id).orElseThrow(() -> new NotFoundException(Match.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
     }
 
@@ -69,6 +85,8 @@ public class MatchServiceImpl implements MatchService {
             match.setTournament(tournament);
             match.setUserOneId(user1Id);
             match.setuserTwoId(user2Id);
+            match.setUserOneUsername(userService.getUsername(user1Id));
+            match.setUserTwoUsername(userService.getUsername(user2Id));
             match.setUserOneReady(false);
             match.setUserTwoReady(false);
             match.setUserOneMoves(0);
@@ -97,6 +115,7 @@ public class MatchServiceImpl implements MatchService {
             throw new AlreadyExistsException(Match.class.getSimpleName() + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
         } else {
             match.setUserOneId(userService.getUserId(userOneId));
+            match.setUserOneUsername(userOneId);
             match.setuserTwoId(0L);
             match.setUserOneReady(false);
             match.setUserTwoReady(false);
@@ -104,6 +123,7 @@ public class MatchServiceImpl implements MatchService {
             match.setUserTwoMoves(0);
             match.setUserOneRoundsTime(0L);
             match.setUserTwoRoundsTime(0L);
+            match.getUsers().add(userService.getUser(userService.getUserId(userOneId)));
             match.setStatus(MatchStatus.STANDBY);
             match.setShowMatch(false);
             match.setWhoWon(0L);
@@ -247,6 +267,8 @@ public class MatchServiceImpl implements MatchService {
                    if(!(matchNow.getUserOneId().equals(userId) || matchNow.getuserTwoId().equals(userId))){
                        if(matchNow.getuserTwoId().equals(0L)){
                            matchNow.setuserTwoId(userId);
+                           matchNow.setUserTwoUsername(userService.getUsername(userId));
+                           matchNow.getUsers().add(userService.getUser(userId));
 //                           User user = userService.getUser(userId);
 //                           user.getMatches().add(matchNow);
 //                           userService.save(user);

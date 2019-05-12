@@ -8,6 +8,7 @@ import java.util.List;
 public interface MatchService {
 
     List<Match> getMatches(Long tournamentId);
+    List<Match> getAllQuickGames();
     List<Match> getUserQuickGames(String userId);
     List<Match> getQuickGames();
     Match getMatch(Long id);
