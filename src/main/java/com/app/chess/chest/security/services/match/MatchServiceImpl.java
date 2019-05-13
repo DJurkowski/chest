@@ -113,7 +113,9 @@ public class MatchServiceImpl implements MatchService {
     public void createQuickGame(Match match, String userOneId) {
         if (match.getId() != null) {
             throw new AlreadyExistsException(Match.class.getSimpleName() + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
-        } else {
+        } else if(existByName(match.getName())){
+            throw new AlreadyExistsException(Match.class.getSimpleName() + " name " + AlreadyExistsException.MESSAGE, HttpStatus.BAD_REQUEST);
+        }else {
             match.setUserOneId(userService.getUserId(userOneId));
             match.setUserOneUsername(userOneId);
             match.setuserTwoId(0L);
@@ -292,6 +294,8 @@ public class MatchServiceImpl implements MatchService {
     public List<Match> getUserQuickGames(String userId) {
         return userService.getUser(userService.getUserId(userId)).getMatches();
     }
+
+    public boolean existByName(String name){ return matchRepository.existsByName(name);}
 
     public boolean existsById(Long id){ return matchRepository.existsById(id);}
 }
