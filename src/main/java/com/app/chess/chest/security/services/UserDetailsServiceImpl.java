@@ -67,6 +67,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     public User getUser(Long id) {
+        System.out.println("Co dostajemy : " + id);
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
@@ -152,7 +153,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<User> userList = new ArrayList<>();
         for(Friend friend: user.getFriends()){
             if(friend.getUserOneAccept().equals(true) && friend.getUserTwoAccept().equals(true)){
-                userList.add(getUser(friend.getId()));
+                if(friend.getUserOneId().equals(user.getId())){
+                    userList.add(getUser(friend.getUserTwoId()));
+                }else {
+                    userList.add(getUser(friend.getUserOneId()));
+                }
             }
         }
         return userList;
