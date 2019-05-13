@@ -67,7 +67,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     public User getUser(Long id) {
-        System.out.println("Co dostajemy : " + id);
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND));
