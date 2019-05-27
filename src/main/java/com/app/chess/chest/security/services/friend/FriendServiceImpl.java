@@ -1,5 +1,6 @@
 package com.app.chess.chest.security.services.friend;
 
+import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
 import com.app.chess.chest.model.friend.Friend;
 import com.app.chess.chest.repository.FriendRepository;
@@ -36,6 +37,17 @@ public class FriendServiceImpl implements FriendService {
             friendRepository.deleteById(id);
         }else {
             throw new NotFoundException(Friend.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void deleteWhereUserIs(Long userId) {
+        for(Friend friend: friendRepository.findAll()){
+            for(User user: friend.getUsers()){
+                if(user.getId().equals(userId)){
+                    delete(friend.getId());
+                }
+            }
         }
     }
 

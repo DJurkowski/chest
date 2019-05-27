@@ -44,11 +44,18 @@ public class ScheduledTasks {
 
         for (Tournament t : tournaments) {
             List<User> userList = t.getUsers();
+
+            if(userList.size()%2 != 0){
+                User oddUser = userList.remove(userList.size()-1);
+                for(User user: userList){
+                    matchService.createMatch(new Match(), t, oddUser.getId(), user.getId());
+                }
+            }
+
             int first = 0;
             int last = userList.size() - 1;
 
             for (int i = 0; i < userList.size() - 1; i++) {
-//                data
                 for (int j = 0; j < (userList.size() / 2); j++) {
                     matchService.createMatch(new Match(), t, userList.get(first).getId(), userList.get(last).getId());
                     first++;

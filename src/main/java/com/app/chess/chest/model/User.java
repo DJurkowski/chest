@@ -92,7 +92,7 @@ public class User {
     @JsonIgnoreProperties(value = "user", allowSetters = true)
     private List<Notification> notifications = new LinkedList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnoreProperties(value = "users", allowSetters = true)
     @JoinTable(
             name = "user_friends",

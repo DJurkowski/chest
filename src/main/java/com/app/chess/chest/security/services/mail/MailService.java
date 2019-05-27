@@ -19,12 +19,17 @@ public class MailService {
 
     public void sendEmail(User user, String password) throws MailException {
 
+        SimpleMailMessage mail = getSimpleMailMessage(user, password);
+
+        javaMailSender.send(mail);
+    }
+
+    public SimpleMailMessage getSimpleMailMessage(User user, String password) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(user.getEmail());
         mail.setSubject("Chess Application Password Reset");
         mail.setText("Your password has been changed.\nYour new password is : " + password +" \n Have a nice day!" +
                 "\nTeam ChessApp.");
-
-        javaMailSender.send(mail);
+        return mail;
     }
 }

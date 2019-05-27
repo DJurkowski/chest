@@ -58,6 +58,10 @@ public class AuthenticationController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
 
+        if (!userRepository.existsByUsername(loginRequest.getUsername())) {
+            return new ResponseEntity<>(new ResponseMessage("Username or password is incorrect!"),
+                    HttpStatus.BAD_REQUEST);
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -117,7 +121,6 @@ public class AuthenticationController {
         user.setRoundTime(0L);
         userRepository.save(user);
         userService.creatingRooms(user);
-        //        tworzymy pokoje do czatow dla z kazdym uzyrkownikiem
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
 }

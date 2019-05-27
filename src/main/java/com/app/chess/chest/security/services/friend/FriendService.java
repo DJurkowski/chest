@@ -9,5 +9,6 @@ public interface FriendService {
 
     Optional<Friend> getFriend(Long id);
     void delete(Long id);
+    void deleteWhereUserIs(Long userId);
     void save(Friend friend);
 }

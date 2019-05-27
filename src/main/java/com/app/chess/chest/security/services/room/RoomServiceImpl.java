@@ -16,8 +16,11 @@ import java.util.Set;
 @Service
 public class RoomServiceImpl implements RoomService {
 
-    public final RoomRepository roomRepository;
-    public final MessageRepository messageRepository;
+    public  RoomRepository roomRepository;
+    public  MessageRepository messageRepository;
+
+    public RoomServiceImpl() {
+    }
 
     @Autowired
     public RoomServiceImpl(RoomRepository roomRepository, MessageRepository messageRepository) {
@@ -28,11 +31,15 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void addMessageToMessageList(String message, Long roomId){
         Room room = getRoom(roomId);
+        room.getMessages().add(initMessage(message,room));
+        roomRepository.save(room);
+    }
+
+    public Message initMessage(String message, Room room) {
         Message messageResult = new Message();
         messageResult.setMessage(message);
         messageResult.setRoom(room);
-        room.getMessages().add(messageResult);
-        roomRepository.save(room);
+        return messageResult;
     }
 
     @Override

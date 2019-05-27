@@ -2,9 +2,9 @@ package com.app.chess.chest.controller;
 
 import com.app.chess.chest.message.response.APIResponse;
 import com.app.chess.chest.message.response.ResponseMessage;
-import com.app.chess.chest.model.User;
 import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
+import com.app.chess.chest.security.services.friend.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,12 @@ public class UserController {
     UserRepository userRepository;
 
     private final UserDetailsServiceImpl userService;
+    private final FriendService friendService;
 
     @Autowired
-    public UserController(UserDetailsServiceImpl userService) {
+    public UserController(UserDetailsServiceImpl userService, FriendService friendService) {
         this.userService = userService;
+        this.friendService = friendService;
     }
 
     @GetMapping("/users")
@@ -80,6 +82,7 @@ public class UserController {
     @DeleteMapping("/user/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity deleteUser(@PathVariable("userId") String userId){
+        friendService.deleteWhereUserIs(userService.getUserId(userId));
         userService.deleteUser(userService.getUserId(userId));
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
     }

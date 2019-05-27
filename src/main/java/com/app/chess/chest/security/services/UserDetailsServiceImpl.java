@@ -30,14 +30,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private static final String DICTIONARY = "ABCDEFGHIJKLabcdefghijklmnopqrstuvwxyzMNOPQRS0123456789TUVWXYZ";
     private static SecureRandom random = new SecureRandom();
 
-    private final UserRepository userRepository;
-    private final RoomServiceImpl roomService;
-    private final RoomRepository roomRepository;
-    private final FriendService friendService;
+    private UserRepository userRepository;
+    private RoomServiceImpl roomService;
+    private RoomRepository roomRepository;
+    private FriendService friendService;
 
     @Autowired
     private PasswordEncoder encoder;
 
+    public UserDetailsServiceImpl() {
+    }
 
     @Autowired
     public UserDetailsServiceImpl(UserRepository userRepository, RoomServiceImpl roomService, RoomRepository roomRepository, FriendService friendService) {
@@ -60,6 +62,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public List<User> getUsers() {
         List<User> users = userRepository.findAll();
+        return getUsersReversed(users);
+    }
+
+    public List<User> getUsersReversed(List<User> users) {
         Collections.sort(users, Comparator.comparing(User::getWins).reversed());
         return users;
     }
@@ -279,7 +285,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> user = getUserByMail(mail);
         user.get().setPassword(encoder.encode(result));
         userRepository.save(user.get());
-        System.out.println("Haslo nowe: " + result);
         return result;
     }
 

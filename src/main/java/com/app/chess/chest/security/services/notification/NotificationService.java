@@ -9,6 +9,7 @@ public interface NotificationService {
     Notification getNotification(Long id);
     List<Notification> getNotifications(String id);
     void createNotification(String message, Long fromUser, Long toUser);
-    void updateNotification(Long id, Notification notification);
-    void deleteNotification(Long id);
+    boolean updateNotification(Long id, Notification notification);
+    boolean deleteNotification(Long id);
+    boolean existsById(Long id);
 }

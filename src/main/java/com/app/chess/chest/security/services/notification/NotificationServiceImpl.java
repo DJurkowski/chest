@@ -16,8 +16,12 @@ import java.util.Set;
 @Service
 public class NotificationServiceImpl implements NotificationService{
 
-    public final UserDetailsServiceImpl userService;
-    public final NotificationRepository notificationRepository;
+    public  UserDetailsServiceImpl userService;
+
+    public  NotificationRepository notificationRepository;
+
+    public NotificationServiceImpl() {
+    }
 
     @Autowired
     public NotificationServiceImpl(UserDetailsServiceImpl userService, NotificationRepository notificationRepository) {
@@ -27,7 +31,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public Notification getNotification(Long id) {
-        return notificationRepository.findById(id).orElseThrow(() -> new NotFoundException(Notification.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND ));
+        return notificationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Notification.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND ));
     }
 
     @Override
@@ -40,39 +45,50 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void createNotification(String message, Long fromUser, Long toUser) {
         User user = userService.getUser(toUser);
+        Notification notification = returnNewNotification(message, fromUser, toUser, user);
+        notificationRepository.save(notification);
+    }
+
+    private Notification returnNewNotification(String message, Long fromUser, Long toUser, User user){
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setSeen(false);
         notification.setFromUser(fromUser);
         notification.setToUser(toUser);
         notification.setUser(user);
-        notificationRepository.save(notification);
+        return notification;
     }
 
     @Override
-    public void updateNotification(Long id, Notification notification) {
+    public boolean updateNotification(Long id, Notification notification) {
         if(existsById(id)){
             Notification notification1Now = getNotification(id);
             if(!notification1Now.getSeen().equals(notification.getSeen())){
                 notification1Now.setSeen(notification.getSeen());
                 notificationRepository.save(notification1Now);
+                return true;
             }
         }
+        return false;
     }
 
     @Override
-    public void deleteNotification(Long id) {
+    public boolean deleteNotification(Long id) {
         if (existsById(id)) {
-            try{
+//            try{
                 notificationRepository.deleteById(id);
-            }catch (Exception e){
-                System.out.println("Error COs Chyba!>??");
-            }
+                return true;
+//            }catch (Exception e){
+//                return false;
+//            }
         } else {
             throw new NotFoundException(Notification.class.getSimpleName() + NotFoundException.MESSAGE, HttpStatus.NOT_FOUND);
         }
+
     }
 
-    public boolean existsById(Long id){ return notificationRepository.existsById(id);}
+    public boolean existsById(Long id){
+        return notificationRepository.existsById(id);
+    }
 
 }
