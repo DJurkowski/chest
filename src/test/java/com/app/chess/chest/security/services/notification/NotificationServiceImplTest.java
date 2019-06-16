@@ -1,8 +1,10 @@
 package com.app.chess.chest.security.services.notification;
 
+import com.app.chess.chest.model.User;
 import com.app.chess.chest.model.exceptions.NotFoundException;
 import com.app.chess.chest.model.notification.Notification;
 import com.app.chess.chest.repository.NotificationRepository;
+import com.app.chess.chest.repository.UserRepository;
 import com.app.chess.chest.security.services.UserDetailsServiceImpl;
 import com.app.chess.chest.security.services.room.RoomService;
 import com.app.chess.chest.security.services.room.RoomServiceImpl;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -31,6 +34,12 @@ public class NotificationServiceImplTest {
     @MockBean
     NotificationRepository notificationRepository;
 
+    @Autowired
+    private UserDetailsServiceImpl userService;
+
+    @MockBean
+    private UserRepository userRepository;
+
 
     @TestConfiguration
     class NotificationServiceTestContextConfiguration {
@@ -40,7 +49,10 @@ public class NotificationServiceImplTest {
             return new NotificationServiceImpl();
         }
 
-
+        @Bean
+        public UserDetailsServiceImpl userService() {
+            return new UserDetailsServiceImpl();
+        }
     }
 
     @Test
@@ -90,21 +102,52 @@ public class NotificationServiceImplTest {
         notification.setId(1L);
 
         Mockito.when(notificationService.existsById(1L)).thenReturn(true);
-//        Mockito.verify(notificationRepository).deleteById(1L);
         assertTrue(notificationService.deleteNotification(1L));
-
     }
 
 
 
     @Test(expected = NotFoundException.class)
-    public void deleteNotification_wiEx() {
+    public void deleteNotification_withEx() {
         Mockito.when(notificationService.existsById(1L)).thenReturn(false);
         notificationService.deleteNotification(1L);
     }
 
-//    @Test()
-//    public void createNotification() {
-//
-//    }
+    @Test()
+    public void createNotification() {
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("dominik");
+
+        Notification notification = new Notification();
+
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        Mockito.when(notificationRepository.save(notification)).thenReturn(notification);
+
+        notificationService.createNotification("newMessage", 0L, 1L);
+
+    }
+
+    @Test()
+    public void getNotifications() {
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("dominik");
+        Notification notification1 = new Notification();
+        Notification notification2 = new Notification();
+        user.getNotifications().add(notification1);
+        user.getNotifications().add(notification2);
+        Mockito.when(userRepository.findByUsername("dominik")).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+       List<Notification> notifications =  notificationService.getNotifications("dominik");
+
+       assertEquals(2, notifications.size());
+
+    }
+
+    @Test
+    public void testNotification(){
+        new NotificationServiceImpl();
+    }
 }
